@@ -7,6 +7,7 @@ import oladejo.mubarak.NiqueResortHub.data.model.RoomStatus;
 import oladejo.mubarak.NiqueResortHub.data.repository.RoomRepository;
 import oladejo.mubarak.NiqueResortHub.dtos.request.RoomDto;
 import oladejo.mubarak.NiqueResortHub.exception.NiqueResortHubException;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService{
     private final RoomRepository roomRepository;
+
+    private final ModelMapper modelMapper;
     @Override
     public Room addRoom(RoomDto addRoomRequest) {
 
@@ -68,7 +71,10 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public Room editRoomDetails(Long roomId, RoomDto editRoomRequest) {
-        return null;
+        Room foundRoom = getRoomById(roomId);
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.map(editRoomRequest, foundRoom);
+        return roomRepository.save(foundRoom);
     }
 
     @Override
@@ -79,6 +85,6 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public void saveRoom(Room room) {
-
+        roomRepository.save(room);
     }
 }
