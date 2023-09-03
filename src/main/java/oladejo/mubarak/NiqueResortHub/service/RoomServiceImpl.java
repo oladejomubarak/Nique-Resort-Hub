@@ -3,11 +3,13 @@ package oladejo.mubarak.NiqueResortHub.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oladejo.mubarak.NiqueResortHub.data.model.Room;
+import oladejo.mubarak.NiqueResortHub.data.model.RoomStatus;
 import oladejo.mubarak.NiqueResortHub.data.repository.RoomRepository;
 import oladejo.mubarak.NiqueResortHub.dtos.request.RoomDto;
 import oladejo.mubarak.NiqueResortHub.exception.NiqueResortHubException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 @Slf4j
@@ -31,22 +33,37 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public Room getRoomById(Long roomId) {
-        return null;
+        return roomRepository.findById(roomId).orElseThrow(() -> new NiqueResortHubException("room with the id " + roomId + " not found"));
     }
 
     @Override
     public List<Room> getAllRooms() {
-        return null;
+        return roomRepository.findAll();
     }
 
     @Override
     public List<Room> getAvailableRooms() {
-        return null;
+        List<Room> availableRooms = new ArrayList<>();
+        List<Room> allRooms = getAllRooms();
+        for (Room room : allRooms) {
+            if (room.getRoomStatus().equals(RoomStatus.UNBOOKED)) {
+                availableRooms.add(room);
+            }
+
+        }
+        return availableRooms;
     }
 
     @Override
     public List<Room> getBookedRooms() {
-        return null;
+        List<Room> unAvailableRooms = new ArrayList<>();
+        List<Room> allRooms = getAllRooms();
+        for (Room room : allRooms) {
+            if (room.getRoomStatus().equals(RoomStatus.BOOKED)) {
+                unAvailableRooms.add(room);
+            }
+        }
+        return unAvailableRooms;
     }
 
     @Override
@@ -56,7 +73,8 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public Room getRoomByRoomNumber(String roomNumber) {
-        return null;
+        return roomRepository.findRoomByRoomNumber(roomNumber).orElseThrow(()-> new
+                NiqueResortHubException("room with number "+roomNumber+" does not exist"));
     }
 
     @Override
