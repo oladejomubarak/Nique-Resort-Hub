@@ -67,5 +67,6 @@ public class GuestServiceImpl implements GuestService{
         CancelledBooking cancelledBooking = new CancelledBooking();
         cancelledBooking.setBooking(foundBooking);
         canCelledBookingRepo.save(cancelledBooking);
+        bookingRepository.delete(foundBooking);
     }
 }
