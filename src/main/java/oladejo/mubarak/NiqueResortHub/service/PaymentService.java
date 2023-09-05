@@ -1,5 +1,9 @@
 package oladejo.mubarak.NiqueResortHub.service;
-@FunctionalInterface
+
+import java.io.IOException;
+
+//@FunctionalInterface
 public interface PaymentService {
-    void payForBookReservation(Long bookingId);
+    String payForBookReservation(Long bookingId) throws IOException;
+    String payForExtendingStay(Long bookingId) throws IOException;
 }
