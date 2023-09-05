@@ -2,11 +2,9 @@ package oladejo.mubarak.NiqueResortHub.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oladejo.mubarak.NiqueResortHub.data.model.Booking;
-import oladejo.mubarak.NiqueResortHub.data.model.PaymentStatus;
-import oladejo.mubarak.NiqueResortHub.data.model.Room;
-import oladejo.mubarak.NiqueResortHub.data.model.RoomType;
+import oladejo.mubarak.NiqueResortHub.data.model.*;
 import oladejo.mubarak.NiqueResortHub.data.repository.BookingRepository;
+import oladejo.mubarak.NiqueResortHub.data.repository.CanCelledBookingRepo;
 import oladejo.mubarak.NiqueResortHub.dtos.request.BookingDto;
 import oladejo.mubarak.NiqueResortHub.exception.NiqueResortHubException;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,7 @@ public class GuestServiceImpl implements GuestService{
     private final BookingRepository bookingRepository;
    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final RoomServiceImpl roomService;
+    private CanCelledBookingRepo canCelledBookingRepo;
     @Override
     public Booking bookRoom(Long roomId, BookingDto bookingDto) {
         Room foundRoom = roomService.getRoomById(roomId);
@@ -53,12 +52,20 @@ public class GuestServiceImpl implements GuestService{
 
     @Override
     public Booking extendStay(Long bookingId, int numberOfDays) {
-        Booking foundBooking
-        return null;
+        Booking foundBooking = findBooking(bookingId);
+        Room room = roomService.getRoomByRoomNumber(foundBooking.getRoomNumber());
+        foundBooking.setExtendStayDays(numberOfDays);
+        foundBooking.setExtendStayPaymentStatus(PaymentStatus.PENDING);
+        foundBooking.setExtendStayPrice(room.getRoomPrice().multiply(BigDecimal.valueOf(numberOfDays)));
+        //foundBooking.setCheckoutDate(foundBooking.getCheckoutDate().plusDays(numberOfDays));
+        return bookingRepository.save(foundBooking);
     }
 
     @Override
     public void cancelBooking(Long bookingId) {
-
+        Booking foundBooking = findBooking(bookingId);
+        CancelledBooking cancelledBooking = new CancelledBooking();
+        cancelledBooking.setBooking(foundBooking);
+        canCelledBookingRepo.save(cancelledBooking);
     }
 }

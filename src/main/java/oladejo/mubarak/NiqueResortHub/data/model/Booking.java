@@ -22,5 +22,9 @@ public class Booking {
     private BigDecimal totalPrice;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    private BigDecimal extendStayPrice;
+    private int extendStayDays;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus extendStayPaymentStatus;
 
 }
