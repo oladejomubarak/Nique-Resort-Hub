@@ -10,4 +10,5 @@ public interface GuestService {
 
     Booking extendStay(Long bookingId, int numberOfDays) throws MessagingException;
     void cancelBooking(Long bookingId) throws MessagingException;
+    void saveBooking(Booking booking);
 }

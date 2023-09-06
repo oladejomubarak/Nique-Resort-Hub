@@ -27,12 +27,16 @@ public class GuestServiceImpl implements GuestService{
     @Override
     public Booking bookRoom(Long roomId, BookingDto bookingDto) throws MessagingException {
         Room foundRoom = roomService.getRoomById(roomId);
+        LocalDate checkInDate = LocalDate.parse(bookingDto.getCheckinDate(), dateFormatter);
 
         for (int i = 0; i < bookingDto.getTelephoneNumber().length(); i++) {
             if(!Character.isDigit(bookingDto.getTelephoneNumber().charAt(i))){
                 throw new NiqueResortHubException("Phone numbers can only be digits");
             }
 
+        }
+        if(checkInDate.isBefore(LocalDate.now())){
+            throw new NiqueResortHubException("You can't choose past date for booking");
         }
         Booking booking = new Booking();
         booking.setEmailAddress(bookingDto.getEmailAddress());
@@ -41,8 +45,8 @@ public class GuestServiceImpl implements GuestService{
         booking.setTelephoneNumber(bookingDto.getTelephoneNumber());
         booking.setRoomNumber(foundRoom.getRoomNumber());
         booking.setPaymentStatus(PaymentStatus.PENDING);
-        booking.setCheckinDate(LocalDate.parse(bookingDto.getCheckinDate(), dateFormatter));
-        booking.setCheckoutDate(LocalDate.parse(bookingDto.getCheckinDate(), dateFormatter)
+        booking.setCheckinDate(checkInDate);
+        booking.setCheckoutDate(checkInDate
                 .plusDays(bookingDto.getNumberOfNightsToBeSent()));
         booking.setTotalPrice(foundRoom.getRoomPrice().multiply(BigDecimal.valueOf(bookingDto.getNumberOfNightsToBeSent())));
         emailService.sendEmailForBooking(bookingDto.getEmailAddress(), buildBookingReservationEmail(
@@ -78,6 +82,11 @@ public class GuestServiceImpl implements GuestService{
                 foundBooking.getFirstName(),
                 foundBooking.getId().toString());
         bookingRepository.delete(foundBooking);
+    }
+
+    @Override
+    public void saveBooking(Booking booking) {
+        bookingRepository.save(booking);
     }
 
     private String buildBookingReservationEmail(String firstname, String bookingId){
