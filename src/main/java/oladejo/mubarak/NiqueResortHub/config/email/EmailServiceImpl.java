@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailService{
         try{
             MimeMessage mailMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailMessage, "Utf-8");
-            mimeMessageHelper.setSubject("Booking Reservation");
+            mimeMessageHelper.setSubject("Payment Completion");
             mimeMessageHelper.setTo(receiverEmail);
             mimeMessageHelper.setFrom("oladejomubarakade@gmail.com", "Nique Resort Hub");
             mimeMessageHelper.setText(message, true);
@@ -60,6 +60,23 @@ public class EmailServiceImpl implements EmailService{
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public void sendEmailForBookingCancellation(String receiverEmail, String name, String bookingId) throws MessagingException {
+
+        MimeMessage message =javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+        messageHelper.setFrom("oladejomubarakade@gmail.com");
+        messageHelper.setTo(receiverEmail);
+        String subject = "Booking Cancellation";
+        String content = "Dear" + " " + name + ","
+                + "<p>Your booking with the id "+bookingId+" has been canceled successfully<p/>"
+                + "<p>Kindly reach out to us as soon as possible if you didn't initiate that. "
+                + "Thank you! God bless you!";
+        messageHelper.setSubject(subject);
+        messageHelper.setText(content, true);
+        javaMailSender.send(message);
     }
 
 }

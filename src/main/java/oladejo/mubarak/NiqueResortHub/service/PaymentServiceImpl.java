@@ -8,6 +8,7 @@ import oladejo.mubarak.NiqueResortHub.data.model.Booking;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @Service
 @Slf4j
@@ -65,5 +66,31 @@ public class PaymentServiceImpl implements PaymentService {
             paymentDetails += response.string();
         }
         return "Payment initiated, check your email to complete your payment";
+    }
+
+    private String buildPaymentEmail(String firstname, String paymentDetails, LocalDate checkinDate){
+        return "Here is your payment details" +
+                "                                   " +
+                "                                       " +
+                "<p>Hello \"" + firstname + "\",</p>" +
+                "<p>Your payment was successfully processed</p>" +
+                "<p>Click the link provided below to complete your payment" +
+                "<p>\"" + paymentDetails + "\"</p>" +
+                "<br>" +
+                "<p>Your check-in date is on  \"" + checkinDate + "\"</p>" +
+                "<p>Thank You, see you soon!</p>";
+    }
+
+    private String buildPaymentEmailForExtendingStay(String firstname, String paymentDetails, LocalDate checkoutDate){
+        return "Here is your payment details" +
+                "                                   " +
+                "                                       " +
+                "<p>Hello \"" + firstname + "\",</p>" +
+                "<p>Your payment was successfully processed</p>" +
+                "<p>Click the link provided below to complete your payment" +
+                "<p>\"" + paymentDetails + "\"</p>" +
+                "<br>" +
+                "<p>Your check-out date will extended till \"" + checkoutDate + "\" after payment completion</p>" +
+                "<p>Thank You!</p>";
     }
 }
