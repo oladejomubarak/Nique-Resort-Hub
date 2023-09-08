@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -87,6 +88,35 @@ public class GuestServiceImpl implements GuestService{
     @Override
     public void saveBooking(Booking booking) {
         bookingRepository.save(booking);
+    }
+
+    @Override
+    public void changeRoomStatusToBooked() {
+        findAllBookings().forEach(booking -> {
+            if(booking.getCheckinDate().equals(LocalDate.now()) &&
+                    booking.getPaymentStatus().equals(PaymentStatus.SUCCESSFUL)){
+                Room foundRoom = roomService.getRoomByRoomNumber(booking.getRoomNumber());
+                foundRoom.setRoomStatus(RoomStatus.BOOKED);
+                roomService.saveRoom(foundRoom);
+            }
+        });
+    }
+
+    @Override
+    public void changeRoomStatusToUnBooked() {
+        findAllBookings().forEach(booking -> {
+            if(booking.getCheckoutDate().equals(LocalDate.now()) &&
+                    booking.getPaymentStatus().equals(PaymentStatus.SUCCESSFUL)){
+                Room foundRoom = roomService.getRoomByRoomNumber(booking.getRoomNumber());
+                foundRoom.setRoomStatus(RoomStatus.UNBOOKED);
+                roomService.saveRoom(foundRoom);
+            }
+        });
+    }
+
+    @Override
+    public List<Booking> findAllBookings() {
+        return bookingRepository.findAll();
     }
 
     private String buildBookingReservationEmail(String firstname, String bookingId){
