@@ -2,9 +2,8 @@ package oladejo.mubarak.NiqueResortHub.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oladejo.mubarak.NiqueResortHub.data.model.CheckIn;
-import oladejo.mubarak.NiqueResortHub.data.model.PaymentStatus;
-import oladejo.mubarak.NiqueResortHub.data.model.RoomStatus;
+import oladejo.mubarak.NiqueResortHub.data.model.*;
+import oladejo.mubarak.NiqueResortHub.data.repository.BookingRepository;
 import oladejo.mubarak.NiqueResortHub.data.repository.CheckInRepository;
 import oladejo.mubarak.NiqueResortHub.dtos.request.CheckInDto;
 import oladejo.mubarak.NiqueResortHub.exception.NiqueResortHubException;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,6 +25,7 @@ public class ReceptionistServiceImpl implements ReceptionistService{
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final GuestServiceImpl guestService;
     private final RoomServiceImpl roomService;
+    private final BookingRepository bookingRepo;
 
 
     @Override
@@ -63,7 +64,8 @@ public class ReceptionistServiceImpl implements ReceptionistService{
 
     @Override
     public CheckIn findCheckIn(Long checkInId) {
-        return null;
+        return checkInRepo.findById(checkInId).orElseThrow(()->
+                new NiqueResortHubException("Check-in not found"));
     }
 
     @Override
@@ -75,6 +77,11 @@ public class ReceptionistServiceImpl implements ReceptionistService{
 
     @Override
     public void deleteCheckIn(Long checkInId) {
+        checkInRepo.delete( findCheckIn(checkInId));
+    }
 
+    @Override
+    public List<Booking> findAllBookingsWhenCheckoutDue() {
+      return bookingRepo.findByCheckoutDateAndPaymentStatus(LocalDate.now(), PaymentStatus.SUCCESSFUL);
     }
 }
