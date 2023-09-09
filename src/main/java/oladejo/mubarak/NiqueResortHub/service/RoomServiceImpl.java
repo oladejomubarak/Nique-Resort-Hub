@@ -78,6 +78,11 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
+    public void deleteRoom(Long roomId) {
+        roomRepository.delete(getRoomById(roomId));
+    }
+
+    @Override
     public Room getRoomByRoomNumber(String roomNumber) {
         return roomRepository.findRoomByRoomNumber(roomNumber).orElseThrow(()-> new
                 NiqueResortHubException("room with number "+roomNumber+" does not exist"));

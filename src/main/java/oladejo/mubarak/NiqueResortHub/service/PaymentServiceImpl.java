@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import oladejo.mubarak.NiqueResortHub.config.email.EmailServiceImpl;
 import oladejo.mubarak.NiqueResortHub.data.model.Booking;
 import oladejo.mubarak.NiqueResortHub.data.model.PaymentStatus;
+import oladejo.mubarak.NiqueResortHub.data.model.Room;
+import oladejo.mubarak.NiqueResortHub.data.model.RoomStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,7 +19,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
     private final EmailServiceImpl emailService;
-
+    private final RoomServiceImpl roomService;
     private final GuestServiceImpl guestService;
     private final String pay_stack_key = System.getenv("PAY_STACK_SECRET_KEY");
 
@@ -45,6 +47,12 @@ public class PaymentServiceImpl implements PaymentService {
         }
         foundBooking.setPaymentStatus(PaymentStatus.SUCCESSFUL);
         guestService.saveBooking(foundBooking);
+        Room foundRoom = roomService.getRoomByRoomNumber(foundBooking.getRoomNumber());
+        if(foundBooking.getCheckinDate().equals(LocalDate.now()) && foundRoom.getRoomStatus().equals(RoomStatus.UNBOOKED)){
+            foundRoom.setRoomStatus(RoomStatus.BOOKED);
+            roomService.saveRoom(foundRoom);
+        }
+
         emailService.sendEmailForPayment(foundBooking.getEmailAddress(),
                 buildPaymentEmail(foundBooking.getFirstName(),
                         paymentDetails, foundBooking.getCheckoutDate()));

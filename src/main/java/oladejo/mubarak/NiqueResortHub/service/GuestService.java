@@ -16,4 +16,6 @@ public interface GuestService {
     void changeRoomStatusToBooked();
     void changeRoomStatusToUnBooked();
     List<Booking> findAllBookings();
+
+    List<Booking> findAllSuccessfulBookingByDate(String date);
 }

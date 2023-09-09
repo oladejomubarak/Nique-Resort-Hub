@@ -17,6 +17,7 @@ public class Booking {
     private String telephoneNumber;
     private String roomNumber;
     private String emailAddress;
+    private LocalDate bookingDate;
     private LocalDate checkinDate;
     private LocalDate  checkoutDate;
     private BigDecimal totalPrice;

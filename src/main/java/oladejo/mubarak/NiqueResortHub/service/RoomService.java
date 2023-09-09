@@ -12,6 +12,7 @@ public interface RoomService {
     List<Room> getAvailableRooms();
     List<Room> getBookedRooms();
     Room editRoomDetails( Long roomId, RoomDto editRoomRequest);
+    void deleteRoom(Long roomId);
 
     Room getRoomByRoomNumber(String roomNumber);
 

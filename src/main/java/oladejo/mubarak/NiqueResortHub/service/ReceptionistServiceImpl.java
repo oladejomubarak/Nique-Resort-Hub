@@ -32,8 +32,6 @@ public class ReceptionistServiceImpl implements ReceptionistService{
     public String checkGuestIn(Long bookingId) {
         var foundBooking = guestService.findBooking(bookingId);
         var foundRoom = roomService.getRoomByRoomNumber(foundBooking.getRoomNumber());
-//        LocalDate checkInDate = LocalDate.parse(checkInDto.getCheckInDate(), dateFormatter);
-//        LocalTime checkInTime = LocalTime.parse(checkInDto.getCheckInTime(), timeFormatter);
         LocalDate checkInDate = LocalDate.parse(LocalDate.now().toString(), dateFormatter);
         LocalTime checkInTime = LocalTime.parse(LocalTime.now().toString(), timeFormatter);
         CheckIn checkIn = new CheckIn(

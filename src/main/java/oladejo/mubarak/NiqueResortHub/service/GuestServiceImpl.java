@@ -46,14 +46,16 @@ public class GuestServiceImpl implements GuestService{
         booking.setTelephoneNumber(bookingDto.getTelephoneNumber());
         booking.setRoomNumber(foundRoom.getRoomNumber());
         booking.setPaymentStatus(PaymentStatus.PENDING);
+        booking.setBookingDate(LocalDate.now());
         booking.setCheckinDate(checkInDate);
         booking.setCheckoutDate(checkInDate
                 .plusDays(bookingDto.getNumberOfNightsToBeSent()));
         booking.setTotalPrice(foundRoom.getRoomPrice().multiply(BigDecimal.valueOf(bookingDto.getNumberOfNightsToBeSent())));
+        bookingRepository.save(booking);
         emailService.sendEmailForBooking(bookingDto.getEmailAddress(), buildBookingReservationEmail(
                 bookingDto.getFirstName(),
                 booking.getId().toString()));
-        return bookingRepository.save(booking);
+        return booking;
     }
 
     @Override
@@ -117,6 +119,12 @@ public class GuestServiceImpl implements GuestService{
     @Override
     public List<Booking> findAllBookings() {
         return bookingRepository.findAll();
+    }
+
+    @Override
+    public List<Booking> findAllSuccessfulBookingByDate(String date) {
+        LocalDate bookingDate = LocalDate.parse(date, dateFormatter);
+        return bookingRepository.findByBookingDateAndPaymentStatus(bookingDate, PaymentStatus.SUCCESSFUL);
     }
 
     private String buildBookingReservationEmail(String firstname, String bookingId){
