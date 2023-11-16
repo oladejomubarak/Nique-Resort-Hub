@@ -28,14 +28,11 @@ public class GuestServiceImpl implements GuestService{
     @Override
     public Booking bookRoom(Long roomId, BookingDto bookingDto) throws MessagingException {
         Room foundRoom = roomService.getRoomById(roomId);
+        Guest guest = new Guest();
+        boolean existByEmail;
         LocalDate checkInDate = LocalDate.parse(bookingDto.getCheckinDate(), dateFormatter);
 
-        for (int i = 0; i < bookingDto.getTelephoneNumber().length(); i++) {
-            if(!Character.isDigit(bookingDto.getTelephoneNumber().charAt(i))){
-                throw new NiqueResortHubException("Phone numbers can only be digits");
-            }
-
-        }
+        validatePhoneNumber(bookingDto.getTelephoneNumber());
         if(checkInDate.isBefore(LocalDate.now())){
             throw new NiqueResortHubException("You can't choose past date for booking");
         }
@@ -56,6 +53,15 @@ public class GuestServiceImpl implements GuestService{
                 bookingDto.getFirstName(),
                 booking.getId().toString()));
         return booking;
+    }
+
+    private void validatePhoneNumber(String phoneNumber) {
+        for (int i = 0; i < phoneNumber.length(); i++) {
+            if(!Character.isDigit(phoneNumber.charAt(i))){
+                throw new NiqueResortHubException("Phone numbers can only be digits");
+            }
+
+        }
     }
 
     @Override
