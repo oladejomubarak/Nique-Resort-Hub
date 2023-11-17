@@ -12,6 +12,7 @@ import oladejo.mubarak.NiqueResortHub.dtos.request.BookingDto;
 import oladejo.mubarak.NiqueResortHub.exception.NiqueResortHubException;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -145,8 +146,8 @@ public class GuestServiceImpl implements GuestService{
     }
 
     @Override
-    public void sendMessageToAllCustomers() {
-
+    public void sendMessageToAllCustomers() throws MessagingException, UnsupportedEncodingException {
+        emailService.sendEmailToAllCustomers();
     }
 
     @Override

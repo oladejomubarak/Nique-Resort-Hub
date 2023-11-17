@@ -5,6 +5,7 @@ import oladejo.mubarak.NiqueResortHub.data.model.Booking;
 import oladejo.mubarak.NiqueResortHub.data.model.Guest;
 import oladejo.mubarak.NiqueResortHub.dtos.request.BookingDto;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface GuestService {
@@ -19,6 +20,6 @@ public interface GuestService {
     List<Booking> findAllBookings();
 
     List<Booking> findAllSuccessfulBookingByDate(String date);
-    void sendMessageToAllCustomers();
+    void sendMessageToAllCustomers() throws MessagingException, UnsupportedEncodingException;
     List<Guest> findAllCustomers();
 }
