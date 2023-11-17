@@ -7,6 +7,7 @@ import oladejo.mubarak.NiqueResortHub.config.email.EmailServiceImpl;
 import oladejo.mubarak.NiqueResortHub.data.model.*;
 import oladejo.mubarak.NiqueResortHub.data.repository.BookingRepository;
 import oladejo.mubarak.NiqueResortHub.data.repository.CanCelledBookingRepo;
+import oladejo.mubarak.NiqueResortHub.data.repository.GuestRepository;
 import oladejo.mubarak.NiqueResortHub.dtos.request.BookingDto;
 import oladejo.mubarak.NiqueResortHub.exception.NiqueResortHubException;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class GuestServiceImpl implements GuestService{
+    private final GuestRepository guestRepository;
     private final EmailServiceImpl emailService;
     private final BookingRepository bookingRepository;
    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -28,8 +30,17 @@ public class GuestServiceImpl implements GuestService{
     @Override
     public Booking bookRoom(Long roomId, BookingDto bookingDto) throws MessagingException {
         Room foundRoom = roomService.getRoomById(roomId);
-        Guest guest = new Guest();
-        boolean existByEmail;
+
+        boolean existByEmail = guestRepository.existsByEmailIgnoreCase(bookingDto.getEmailAddress());
+        if(!existByEmail){
+            Guest guest = new Guest();
+            guest.setEmail(bookingDto.getEmailAddress());
+            guest.setFirstName(bookingDto.getFirstName());
+            guest.setLastName(bookingDto.getLastName());
+            guest.setTelephoneNumber(bookingDto.getTelephoneNumber());
+            guestRepository.save(guest);
+        }
+
         LocalDate checkInDate = LocalDate.parse(bookingDto.getCheckinDate(), dateFormatter);
 
         validatePhoneNumber(bookingDto.getTelephoneNumber());
@@ -131,6 +142,11 @@ public class GuestServiceImpl implements GuestService{
     public List<Booking> findAllSuccessfulBookingByDate(String date) {
         LocalDate bookingDate = LocalDate.parse(date, dateFormatter);
         return bookingRepository.findByBookingDateAndPaymentStatus(bookingDate, PaymentStatus.SUCCESSFUL);
+    }
+
+    @Override
+    public void sendMessageToAllCustomers() {
+
     }
 
     private String buildBookingReservationEmail(String firstname, String bookingId){

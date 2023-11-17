@@ -79,6 +79,22 @@ public class EmailServiceImpl implements EmailService{
         javaMailSender.send(message);
     }
 
+    @Override
+    public void sendEmailToAllCustomers(String customerEmail, String name) throws MessagingException {
+        MimeMessage message =javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+        messageHelper.setFrom("oladejomubarakade@gmail.com", "Nique Resort Hub");
+        messageHelper.setTo(receiverEmail);
+        String subject = "Booking Cancellation";
+        String content = "Dear" + " " + name + ","
+                + "<p>Your booking with the id "+bookingId+" has been canceled successfully<p/>"
+                + "<p>Kindly reach out to us as soon as possible if you didn't initiate that. "
+                + "Thank you! God bless you!";
+        messageHelper.setSubject(subject);
+        messageHelper.setText(content, true);
+        javaMailSender.send(message);
+    }
+
 }
 
 

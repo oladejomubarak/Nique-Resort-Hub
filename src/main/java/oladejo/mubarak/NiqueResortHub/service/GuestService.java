@@ -18,4 +18,5 @@ public interface GuestService {
     List<Booking> findAllBookings();
 
     List<Booking> findAllSuccessfulBookingByDate(String date);
+    void sendMessageToAllCustomers();
 }
