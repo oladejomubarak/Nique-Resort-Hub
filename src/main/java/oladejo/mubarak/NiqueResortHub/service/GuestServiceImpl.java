@@ -149,6 +149,11 @@ public class GuestServiceImpl implements GuestService{
 
     }
 
+    @Override
+    public List<Guest> findAllCustomers() {
+        return guestRepository.findAll();
+    }
+
     private String buildBookingReservationEmail(String firstname, String bookingId){
         return "Hello" + " " + firstname + ","
                 + "<p>Thank you for making a reservation with us!!!<p/>"

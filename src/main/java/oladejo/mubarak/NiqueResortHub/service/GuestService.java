@@ -2,6 +2,7 @@ package oladejo.mubarak.NiqueResortHub.service;
 
 import jakarta.mail.MessagingException;
 import oladejo.mubarak.NiqueResortHub.data.model.Booking;
+import oladejo.mubarak.NiqueResortHub.data.model.Guest;
 import oladejo.mubarak.NiqueResortHub.dtos.request.BookingDto;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface GuestService {
 
     List<Booking> findAllSuccessfulBookingByDate(String date);
     void sendMessageToAllCustomers();
+    List<Guest> findAllCustomers();
 }
