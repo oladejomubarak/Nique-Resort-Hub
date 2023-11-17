@@ -10,6 +10,6 @@ public interface EmailService {
     void sendEmailForBooking(String receiverEmail, String message) throws MessagingException;
     void sendEmailForPayment(String receiverEmail, String message) throws MessagingException;
     void sendEmailForBookingCancellation(String receiverEmail, String name, String bookingId) throws MessagingException;
-    void sendEmailToAllCustomers(String customerEmail, String name) throws MessagingException, UnsupportedEncodingException;
+    void sendEmailToAllCustomers() throws MessagingException, UnsupportedEncodingException;
 
 }

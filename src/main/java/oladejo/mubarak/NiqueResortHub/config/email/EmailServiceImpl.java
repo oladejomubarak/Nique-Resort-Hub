@@ -85,21 +85,22 @@ public class EmailServiceImpl implements EmailService{
     }
 
     @Override
-    public void sendEmailToAllCustomers(String customerEmail, String name) throws MessagingException, UnsupportedEncodingException {
-        List<Guest> allCustomers = guestService.findAllCustomers();
+    public void sendEmailToAllCustomers() throws MessagingException, UnsupportedEncodingException {
+        List<Guest> allGuests = guestService.findAllCustomers();
+        for (Guest guest: allGuests) {
+            MimeMessage message =javaMailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+            messageHelper.setFrom("oladejomubarakade@gmail.com", "Nique Resort Hub");
+            messageHelper.setTo(guest.getEmail());
+            String subject = "Booking Cancellation";
+            String content = "Dear" + " " + guest.getFirstName() + ","
+                    + "<p>We are pleased to inform you that our pool service is now working properly<p/>";
+            messageHelper.setSubject(subject);
+            messageHelper.setText(content, true);
+            javaMailSender.send(message);
 
-        MimeMessage message =javaMailSender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(message);
-        messageHelper.setFrom("oladejomubarakade@gmail.com", "Nique Resort Hub");
-        messageHelper.setTo(receiverEmail);
-        String subject = "Booking Cancellation";
-        String content = "Dear" + " " + name + ","
-                + "<p>Your booking with the id "+bookingId+" has been canceled successfully<p/>"
-                + "<p>Kindly reach out to us as soon as possible if you didn't initiate that. "
-                + "Thank you! God bless you!";
-        messageHelper.setSubject(subject);
-        messageHelper.setText(content, true);
-        javaMailSender.send(message);
+        }
+
     }
 
 }
