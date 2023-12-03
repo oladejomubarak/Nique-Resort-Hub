@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -48,6 +49,11 @@ public class GuestServiceImpl implements GuestService{
         if(checkInDate.isBefore(LocalDate.now())){
             throw new NiqueResortHubException("You can't choose past date for booking");
         }
+        if(Objects.equals(checkIfCheckInDateExists(checkInDate,foundRoom.getRoomNumber()), true)){
+            throw new NiqueResortHubException("The room has been booked");
+
+        }
+
         Booking booking = new Booking();
         booking.setEmailAddress(bookingDto.getEmailAddress());
         booking.setFirstName(bookingDto.getFirstName());
@@ -58,8 +64,8 @@ public class GuestServiceImpl implements GuestService{
         booking.setBookingDate(LocalDate.now());
         booking.setCheckinDate(checkInDate);
         booking.setCheckoutDate(checkInDate
-                .plusDays(bookingDto.getNumberOfNightsToBeSent()));
-        booking.setTotalPrice(foundRoom.getRoomPrice().multiply(BigDecimal.valueOf(bookingDto.getNumberOfNightsToBeSent())));
+                .plusDays(bookingDto.getNumberOfNightsToBeSpent()));
+        booking.setTotalPrice(foundRoom.getRoomPrice().multiply(BigDecimal.valueOf(bookingDto.getNumberOfNightsToBeSpent())));
         bookingRepository.save(booking);
         emailService.sendEmailForBooking(bookingDto.getEmailAddress(), buildBookingReservationEmail(
                 bookingDto.getFirstName(),
@@ -138,7 +144,6 @@ public class GuestServiceImpl implements GuestService{
     public List<Booking> findAllBookings() {
         return bookingRepository.findAll();
     }
-
     @Override
     public List<Booking> findAllSuccessfulBookingByDate(String date) {
         LocalDate bookingDate = LocalDate.parse(date, dateFormatter);
@@ -155,6 +160,20 @@ public class GuestServiceImpl implements GuestService{
         return guestRepository.findAll();
     }
 
+    @Override
+    public List<Booking> findBookingsByCheckinDate(LocalDate date) {
+        return bookingRepository.findBookingsByCheckinDate(date);
+    }
+    private boolean checkIfCheckInDateExists(LocalDate date, String roomNumber){
+     boolean isDateBooked = false;
+        for (Booking booking: findBookingsByCheckinDate(date)) {
+            if(booking.getCheckinDate().equals(date) && booking.getRoomNumber().equals(roomNumber)) {
+                isDateBooked = true;
+                break;
+            }
+        }
+        return isDateBooked;
+    }
     private String buildBookingReservationEmail(String firstname, String bookingId){
         return "Hello" + " " + firstname + ","
                 + "<p>Thank you for making a reservation with us!!!<p/>"

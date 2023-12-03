@@ -1,20 +1,19 @@
 package oladejo.mubarak.NiqueResortHub.dtos.request;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import oladejo.mubarak.NiqueResortHub.data.model.PaymentStatus;
-import oladejo.mubarak.NiqueResortHub.data.model.RoomType;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Data
 public class BookingDto {
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotBlank
     private String telephoneNumber;
+    @NotBlank
     private String emailAddress;
+    @NotBlank
     private String checkinDate;
-    private int numberOfNightsToBeSent;
+    private int numberOfNightsToBeSpent;
 }
