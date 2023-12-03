@@ -49,7 +49,8 @@ public class GuestServiceImpl implements GuestService{
         if(checkInDate.isBefore(LocalDate.now())){
             throw new NiqueResortHubException("You can't choose past date for booking");
         }
-        if(Objects.equals(checkIfCheckInDateExists(checkInDate,foundRoom.getRoomNumber()), true)){
+        if(Objects.equals(checkIfCheckInDateExists(checkInDate,foundRoom.getRoomNumber()), true)
+                && foundRoom.getRoomStatus().equals(RoomStatus.BOOKED)){
             throw new NiqueResortHubException("The room has been booked");
 
         }
