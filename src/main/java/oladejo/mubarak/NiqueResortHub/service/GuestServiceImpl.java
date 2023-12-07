@@ -77,7 +77,7 @@ public class GuestServiceImpl implements GuestService{
     private void validatePhoneNumber(String phoneNumber) {
         for (int i = 0; i < phoneNumber.length(); i++) {
             if(!Character.isDigit(phoneNumber.charAt(i))){
-                throw new NiqueResortHubException("Phone numbers can only be digits");
+                throw new NiqueResortHubException("Phone number can only be digits");
             }
 
         }
