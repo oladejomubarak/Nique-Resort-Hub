@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class CancelledBooking {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @OneToOne
     private Booking booking;

@@ -17,7 +17,7 @@ import java.util.UUID;
 @Data
 public class CheckIn{
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private LocalDate checkInDate;
     private LocalTime checkInTime;

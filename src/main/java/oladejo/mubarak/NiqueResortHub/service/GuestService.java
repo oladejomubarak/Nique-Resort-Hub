@@ -24,4 +24,5 @@ public interface GuestService {
     void sendMessageToAllCustomers() throws MessagingException, UnsupportedEncodingException;
     List<Guest> findAllCustomers();
     List<Booking> findBookingsByCheckinDate(LocalDate date);
+    void sendEmailToAllCustomers() throws MessagingException, UnsupportedEncodingException;
 }

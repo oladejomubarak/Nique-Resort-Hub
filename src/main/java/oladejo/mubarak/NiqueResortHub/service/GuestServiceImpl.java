@@ -1,6 +1,7 @@
 package oladejo.mubarak.NiqueResortHub.service;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oladejo.mubarak.NiqueResortHub.config.email.EmailServiceImpl;
@@ -10,6 +11,8 @@ import oladejo.mubarak.NiqueResortHub.data.repository.CanCelledBookingRepo;
 import oladejo.mubarak.NiqueResortHub.data.repository.GuestRepository;
 import oladejo.mubarak.NiqueResortHub.dtos.request.BookingDto;
 import oladejo.mubarak.NiqueResortHub.exception.NiqueResortHubException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -29,6 +32,7 @@ public class GuestServiceImpl implements GuestService{
    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final RoomServiceImpl roomService;
     private final CanCelledBookingRepo canCelledBookingRepo;
+    private final JavaMailSender javaMailSender;
     @Override
     public Booking bookRoom(Long roomId, BookingDto bookingDto) throws MessagingException {
         Room foundRoom = roomService.getRoomById(roomId);
@@ -153,7 +157,7 @@ public class GuestServiceImpl implements GuestService{
 
     @Override
     public void sendMessageToAllCustomers() throws MessagingException, UnsupportedEncodingException {
-        emailService.sendEmailToAllCustomers();
+        sendEmailToAllCustomers();
     }
 
     @Override
@@ -188,5 +192,24 @@ public class GuestServiceImpl implements GuestService{
         return "Hello" + " " + firstname + ","
                 + "<p>Your request for extending your stay with us has been received. "
                 + "<p>Kindly make your payment in order to complete your request";
+    }
+
+    @Override
+    public void sendEmailToAllCustomers() throws MessagingException, UnsupportedEncodingException {
+        List<Guest> allGuests = findAllCustomers();
+        for (Guest guest: allGuests) {
+            MimeMessage message =javaMailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+            messageHelper.setFrom("oladejomubarakade@gmail.com", "Nique Resort Hub");
+            messageHelper.setTo(guest.getEmail());
+            String subject = "Booking Cancellation";
+            String content = "Dear" + " " + guest.getFirstName() + ","
+                    + "<p>We are pleased to inform you that our pool service is now working properly<p/>";
+            messageHelper.setSubject(subject);
+            messageHelper.setText(content, true);
+            javaMailSender.send(message);
+
+        }
+
     }
 }

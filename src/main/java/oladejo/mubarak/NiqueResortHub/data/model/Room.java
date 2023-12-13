@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 @Entity
 @Data
-@NoArgsConstructor
+//@NoArgsConstructor
 @RequiredArgsConstructor
 public class Room {
     @Id

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Data
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String firstName;
     private String lastName;

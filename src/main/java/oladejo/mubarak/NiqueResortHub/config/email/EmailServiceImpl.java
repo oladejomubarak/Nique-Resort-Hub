@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService{
     private final JavaMailSender javaMailSender;
-    private final GuestServiceImpl guestService;
+   // private final GuestServiceImpl guestService;
     @Override
     public void sendEmailForBooking(String receiverEmail, String message) throws MessagingException {
         try{
@@ -84,24 +84,7 @@ public class EmailServiceImpl implements EmailService{
         javaMailSender.send(message);
     }
 
-    @Override
-    public void sendEmailToAllCustomers() throws MessagingException, UnsupportedEncodingException {
-        List<Guest> allGuests = guestService.findAllCustomers();
-        for (Guest guest: allGuests) {
-            MimeMessage message =javaMailSender.createMimeMessage();
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message);
-            messageHelper.setFrom("oladejomubarakade@gmail.com", "Nique Resort Hub");
-            messageHelper.setTo(guest.getEmail());
-            String subject = "Booking Cancellation";
-            String content = "Dear" + " " + guest.getFirstName() + ","
-                    + "<p>We are pleased to inform you that our pool service is now working properly<p/>";
-            messageHelper.setSubject(subject);
-            messageHelper.setText(content, true);
-            javaMailSender.send(message);
 
-        }
-
-    }
 
 }
 
