@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/room/")
+@RequestMapping("/api/v1/room/")
 @CrossOrigin("*")
 public class RoomController {
     private final RoomServiceImpl roomService;

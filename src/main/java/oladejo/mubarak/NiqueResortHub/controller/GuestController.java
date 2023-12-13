@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 
 @RestController
-@RequestMapping("api/v1/guest/")
+@RequestMapping("/api/v1/guest/")
 @CrossOrigin("*")
 @RequiredArgsConstructor
 public class GuestController {

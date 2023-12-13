@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/payment/")
+@RequestMapping("/api/v1/payment/")
 @CrossOrigin("*")
 public class PaymentController {
     private final PaymentServiceImpl paymentService;
