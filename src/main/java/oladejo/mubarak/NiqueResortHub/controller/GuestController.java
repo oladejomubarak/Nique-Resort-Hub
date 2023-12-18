@@ -36,7 +36,7 @@ public class GuestController {
     }
 
     @PatchMapping("booking/extend")
-    public ResponseEntity<?> extendStay(@RequestParam Long bookingId, @RequestParam int numberOfDays) {
+    public ResponseEntity<?> extendStay(@RequestParam String bookingId, @RequestParam int numberOfDays) {
         try {
             return ResponseEntity.ok(guestService.extendStay(bookingId, numberOfDays));
         } catch (Exception e) {

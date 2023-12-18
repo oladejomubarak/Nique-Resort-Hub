@@ -12,6 +12,7 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    private String generatedBookingId;
     private String firstName;
     private String lastName;
     private String telephoneNumber;

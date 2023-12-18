@@ -13,7 +13,7 @@ public interface GuestService {
     Booking bookRoom(Long roomId, BookingDto bookingDto) throws MessagingException;
     Booking findBooking(Long bookingId);
 
-    Booking extendStay(Long bookingId, int numberOfDays) throws MessagingException;
+    Booking extendStay(String bookingId, int numberOfDays) throws MessagingException;
     void cancelBooking(Long bookingId) throws MessagingException;
     void saveBooking(Booking booking);
     void changeRoomStatusToBooked();
@@ -25,4 +25,6 @@ public interface GuestService {
     List<Guest> findAllCustomers();
     List<Booking> findBookingsByCheckinDate(LocalDate date);
     void sendEmailToAllCustomers() throws MessagingException, UnsupportedEncodingException;
+    String generateBookingId();
+    Booking findBookingByGeneratedBookingId(String generatedBookingId);
 }

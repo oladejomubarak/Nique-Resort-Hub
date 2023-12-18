@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oladejo.mubarak.NiqueResortHub.config.email.EmailServiceImpl;
 import oladejo.mubarak.NiqueResortHub.data.model.*;
+import oladejo.mubarak.NiqueResortHub.data.repository.BookingIdGeneratorRepo;
 import oladejo.mubarak.NiqueResortHub.data.repository.BookingRepository;
 import oladejo.mubarak.NiqueResortHub.data.repository.CanCelledBookingRepo;
 import oladejo.mubarak.NiqueResortHub.data.repository.GuestRepository;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -32,10 +34,15 @@ public class GuestServiceImpl implements GuestService{
    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final RoomServiceImpl roomService;
     private final CanCelledBookingRepo canCelledBookingRepo;
+    private final BookingIdGeneratorRepo bookingIdGeneratorRepo;
     private final JavaMailSender javaMailSender;
     @Override
     public Booking bookRoom(Long roomId, BookingDto bookingDto) throws MessagingException {
         Room foundRoom = roomService.getRoomById(roomId);
+        String generatedBookingId = generateBookingId();
+        BookingIdGenerator bookingIdGenerator = new BookingIdGenerator();
+        bookingIdGenerator.setGeneratedBookingId(generatedBookingId);
+        bookingIdGeneratorRepo.save(bookingIdGenerator);
 
         boolean existByEmail = guestRepository.existsByEmailIgnoreCase(bookingDto.getEmailAddress());
         if(!existByEmail){
@@ -60,6 +67,7 @@ public class GuestServiceImpl implements GuestService{
         }
 
         Booking booking = new Booking();
+        booking.setGeneratedBookingId(bookingIdGenerator.getGeneratedBookingId());
         booking.setEmailAddress(bookingDto.getEmailAddress());
         booking.setFirstName(bookingDto.getFirstName());
         booking.setLastName(bookingDto.getLastName());
@@ -74,7 +82,7 @@ public class GuestServiceImpl implements GuestService{
         bookingRepository.save(booking);
         emailService.sendEmailForBooking(bookingDto.getEmailAddress(), buildBookingReservationEmail(
                 bookingDto.getFirstName(),
-                booking.getId().toString()));
+                booking.getGeneratedBookingId()));
         return booking;
     }
 
@@ -93,8 +101,9 @@ public class GuestServiceImpl implements GuestService{
     }
 
     @Override
-    public Booking extendStay(Long bookingId, int numberOfDays) throws MessagingException {
-        Booking foundBooking = findBooking(bookingId);
+    public Booking extendStay(String bookingId, int numberOfDays) throws MessagingException {
+        //Booking foundBooking = findBooking(bookingId);
+        Booking foundBooking = findBookingByGeneratedBookingId(bookingId);
         Room room = roomService.getRoomByRoomNumber(foundBooking.getRoomNumber());
         foundBooking.setExtendStayDays(numberOfDays);
         foundBooking.setExtendStayPaymentStatus(PaymentStatus.PENDING);
@@ -211,5 +220,24 @@ public class GuestServiceImpl implements GuestService{
 
         }
 
+    }
+
+    @Override
+    public String generateBookingId() {
+       // String bookingId ="";
+       String bookingId = UUID.randomUUID().toString();
+
+        boolean existBookingIdGenerator = bookingIdGeneratorRepo.existsByGeneratedBookingId(bookingId);
+        if(existBookingIdGenerator){
+            bookingId = generateBookingId();
+        }
+        return bookingId;
+    }
+
+    @Override
+    public Booking findBookingByGeneratedBookingId(String generatedBookingId) {
+
+        return bookingRepository.findBookingByGeneratedBookingId(generatedBookingId).orElseThrow(()-> new NiqueResortHubException("" +
+                "Booking not found"));
     }
 }
