@@ -6,6 +6,6 @@ import java.io.IOException;
 
 //@FunctionalInterface
 public interface PaymentService {
-    String payForBookReservation(Long bookingId) throws IOException, MessagingException;
-    String payForExtendingStay(Long bookingId) throws IOException, MessagingException;
+    String payForBookReservation(String generatedBookingId) throws IOException, MessagingException;
+    String payForExtendingStay(String generatedBookingId) throws IOException, MessagingException;
 }

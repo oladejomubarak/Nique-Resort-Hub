@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
     private final PaymentServiceImpl paymentService;
     @PostMapping("booking")
-    public ResponseEntity<?> payForRoomBooking(@RequestParam Long bookingId) {
+    public ResponseEntity<?> payForRoomBooking(@RequestParam String bookingId) {
         try {
             return ResponseEntity.ok(paymentService.payForBookReservation(bookingId));
         } catch (Exception e) {
@@ -21,7 +21,7 @@ public class PaymentController {
     }
 
     @PostMapping("extend-stay")
-    public ResponseEntity<?> payForExtendStay(@RequestParam Long bookingId) {
+    public ResponseEntity<?> payForExtendStay(@RequestParam String bookingId) {
         try {
             return ResponseEntity.ok(paymentService.payForExtendingStay(bookingId));
         } catch (Exception e) {

@@ -114,14 +114,14 @@ public class GuestServiceImpl implements GuestService{
     }
 
     @Override
-    public void cancelBooking(Long bookingId) throws MessagingException {
-        Booking foundBooking = findBooking(bookingId);
+    public void cancelBooking(String generatedBookingId) throws MessagingException {
+        Booking foundBooking = findBookingByGeneratedBookingId(generatedBookingId);
         CancelledBooking cancelledBooking = new CancelledBooking();
         cancelledBooking.setBooking(foundBooking);
         canCelledBookingRepo.save(cancelledBooking);
         emailService.sendEmailForBookingCancellation(foundBooking.getEmailAddress(),
                 foundBooking.getFirstName(),
-                foundBooking.getId().toString());
+                foundBooking.getGeneratedBookingId());
         bookingRepository.delete(foundBooking);
     }
 

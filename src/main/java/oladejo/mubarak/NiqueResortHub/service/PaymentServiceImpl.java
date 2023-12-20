@@ -27,13 +27,13 @@ public class PaymentServiceImpl implements PaymentService {
     private final MediaType mediaType = MediaType.parse("application/json");
 
     @Override
-    public String payForBookReservation(Long bookingId) throws IOException, MessagingException {
-        Booking foundBooking = guestService.findBooking(bookingId);
+    public String payForBookReservation(String generatedBookingId) throws IOException, MessagingException {
+        Booking foundBooking = guestService.findBookingByGeneratedBookingId(generatedBookingId);
 
         RequestBody paymentBody = RequestBody.create(mediaType,
                 "{\"amount\":" + foundBooking.getTotalPrice() + "," +
                         "\"email\":\"" + foundBooking.getEmailAddress() + "\"," +
-                        "\"reference\":\"" + foundBooking.getId().toString() + "\"}");
+                        "\"reference\":\"" + foundBooking.getGeneratedBookingId() + "\"}");
 
         Request request = new Request.Builder()
                 .url("https://api.paystack.co/transaction/initialize")
@@ -60,13 +60,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public String payForExtendingStay(Long bookingId) throws IOException, MessagingException {
-        Booking foundBooking = guestService.findBooking(bookingId);
+    public String payForExtendingStay(String generatedBookingId) throws IOException, MessagingException {
+        Booking foundBooking = guestService.findBookingByGeneratedBookingId(generatedBookingId);
 
         RequestBody paymentBody = RequestBody.create(mediaType,
                 "{\"amount\":" + foundBooking.getExtendStayPrice() + "," +
                         "\"email\":\"" + foundBooking.getEmailAddress() + "\"," +
-                        "\"reference\":\"" + foundBooking.getId() + "\"}");
+                        "\"reference\":\"" + foundBooking.getGeneratedBookingId() + "\"}");
 
         Request request = new Request.Builder()
                 .url("https://api.paystack.co/transaction/initialize")

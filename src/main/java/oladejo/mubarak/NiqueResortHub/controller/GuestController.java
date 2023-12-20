@@ -45,7 +45,7 @@ public class GuestController {
     }
 
     @DeleteMapping("booking/cancel")
-    public ResponseEntity<?> cancelBooking(@RequestParam Long bookingId) {
+    public ResponseEntity<?> cancelBooking(@RequestParam String bookingId) {
         try {
             guestService.cancelBooking(bookingId);
             return ResponseEntity.ok("Booking has been cancelled successfully");

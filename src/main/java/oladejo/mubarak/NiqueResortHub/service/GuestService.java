@@ -14,7 +14,7 @@ public interface GuestService {
     Booking findBooking(Long bookingId);
 
     Booking extendStay(String bookingId, int numberOfDays) throws MessagingException;
-    void cancelBooking(Long bookingId) throws MessagingException;
+    void cancelBooking(String generatedBookingId) throws MessagingException;
     void saveBooking(Booking booking);
     void changeRoomStatusToBooked();
     void changeRoomStatusToUnBooked();
