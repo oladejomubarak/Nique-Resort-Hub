@@ -7,7 +7,7 @@ import oladejo.mubarak.NiqueResortHub.dtos.request.CheckInDto;
 import java.util.List;
 
 public interface ReceptionistService {
-    String checkGuestIn(Long bookingId);
+    String checkGuestIn(String generatedBookingId);
     //CheckIn updateCheckIn(Long checkInId, CheckInDto checkInDto);
     CheckIn findCheckIn(Long checkInId);
     List<CheckIn> findCheckInByDate(String checkInDate);

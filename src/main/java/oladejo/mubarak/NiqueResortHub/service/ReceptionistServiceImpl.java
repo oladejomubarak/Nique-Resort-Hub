@@ -29,8 +29,8 @@ public class ReceptionistServiceImpl implements ReceptionistService{
 
 
     @Override
-    public String checkGuestIn(Long bookingId) {
-        var foundBooking = guestService.findBooking(bookingId);
+    public String checkGuestIn(String generatedBookingId) {
+        var foundBooking = guestService.findBookingByGeneratedBookingId(generatedBookingId);
         var foundRoom = roomService.getRoomByRoomNumber(foundBooking.getRoomNumber());
         LocalDate checkInDate = LocalDate.parse(LocalDate.now().toString(), dateFormatter);
         LocalTime checkInTime = LocalTime.parse(LocalTime.now().toString(), timeFormatter);
